@@ -1,0 +1,23 @@
+{
+  "name": "nodedatabase",
+  "version": "1.0.0",
+  "main": "BusinessLogic/app.js",
+  "scripts": {
+    "start": "nodemon .\\BusinessLogic\\app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "*",
+    "consolidate": "*",
+    "dust": "*",
+    "dustjs-helpers": "*",
+    "dustjs-linkedin": "*",
+    "express": "*",
+    "nodemon": "^1.19.0",
+    "pg": "*",
+    "pg-promise": "^8.7.2"
+  },
+  "description": ""
+}
