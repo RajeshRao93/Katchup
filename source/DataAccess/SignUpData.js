@@ -20,7 +20,7 @@ function Signup(userName, password, pinCode, contactNumber, email){
         .catch(function (err) {
             reject("Error found in signup / User already found..");
         })  
-        pg.end();      
+             
     })    
     .catch((err) => {
         console.error("Error found in signup: ", err);
