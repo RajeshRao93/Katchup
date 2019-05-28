@@ -3,6 +3,7 @@ const app = express();
 const login = require('../DataAccess/LoginData.js');
 const signupdata = require('../DataAccess/SignUpData.js');
 const validations = require('../Utilities/Validator.js');
+const postevent = require('../DataAccess/PostEvent.js')
 const upload = require('./fileUpload');
 const singleUpload = upload.single("image"); //Key to be used while sending request
 app.use(express.json());
@@ -66,10 +67,26 @@ app.post('/signup', (req,res) => {
     signupdata.Signup(req.body.name, req.body.password, req.body.pinCode, req.body.contactNumber,
         req.body.email)
     .then((value) => {
-        res.status(200).send(JSON.stringify({message : value}));
+        res.status(200).send(JSON.stringify({value}));
     })
     .catch(err => res.status(400).send(JSON.stringify({message : err})));    
 });
+
+//API for posting an event 
+app.post('/postevent', (req, res) => {
+    // try{
+    //     validations.xx(req, res) ;
+    // }
+    // catch(err){
+    //        return res.status(400).send(JSON.stringify({message : err}))
+    // }
+    postevent.Postevent(req.body.eventname, req.body.eventdescription, req.body.date, req.body.time, req.body.eventtype, req.body.eventcategory,
+        req.body.cost, req.body.userid, req.body.totalseats, req.body.pincode, req.body.premiumtype)
+        .then((value) => {
+            res.status(200).send(JSON.stringify({value}));
+        })
+        .catch(err => res.status(400).send(JSON.stringify({message : err})));
+    });
 
 app.listen(port, ()=>{
     console.log("Server listening at port : " + port);
