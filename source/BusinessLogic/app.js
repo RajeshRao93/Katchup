@@ -1,10 +1,12 @@
 const express = require('express') ;
 const app = express();
 const login = require('../DataAccess/LoginData.js');
-const signup = require('../DataAccess/SignUpData.js');
+const signupdata = require('../DataAccess/SignUpData.js');
+const validations = require('../Utilities/Validator.js');
 const upload = require('./fileUpload');
 const singleUpload = upload.single("image"); //Key to be used while sending request
 app.use(express.json());
+const port = 3005;
 
 //sample
 app.get('/get', (req,res)=>{
@@ -25,33 +27,43 @@ app.post('/imageupload', (req, res) => {
     });
 });
 
+//API to get all the available pincodes 
+app.get('/getpincode', (req, res)=>{
+    signupdata.GetPincode()
+    .then((value) => {
+        res.status(200).send(JSON.stringify(value));
+    })
+    .catch(err => res.status(400).send(JSON.stringify({message : err})));
+})
+
 //Login API
+//returns userid , email id, name, message
 app.post('/login', (req, res) => { 
     
     try{
-    validateLoginInput(req, res);
+        validations.validateLoginInput(req, res);
     }
     catch(err){
         return res.status(400).send(JSON.stringify({message : err}))
     }
-    login(req.body.name, req.body.password)
+    login(req.body.userid, req.body.password)
     .then((value) => {
-        res.status(200).send(JSON.stringify({message : value}));
+        res.status(200).send(JSON.stringify(value));
     })
     .catch(err => res.status(400).send(JSON.stringify({message : err})));
 });
 
 //Signup API
-app.post('/signup', (req,res) => {
-     
+//returns userid , email, name of the signed up used
+app.post('/signup', (req,res) => {     
     
     try{
-        validateSignupInput(req, res) ;
+        validations.validateSignupInput(req, res) ;
     }
     catch(err){
            return res.status(400).send(JSON.stringify({message : err}))
     }
-    signup(req.body.name, req.body.password, req.body.pinCode, req.body.contactNumber,
+    signupdata.Signup(req.body.name, req.body.password, req.body.pinCode, req.body.contactNumber,
         req.body.email)
     .then((value) => {
         res.status(200).send(JSON.stringify({message : value}));
@@ -59,19 +71,6 @@ app.post('/signup', (req,res) => {
     .catch(err => res.status(400).send(JSON.stringify({message : err})));    
 });
 
-app.listen(3001, ()=>{
-    console.log("Server listening at port 3001");
+app.listen(port, ()=>{
+    console.log("Server listening at port : " + port);
 })
-
-function validateSignupInput(req, res){
-    if (!req.body.name || !req.body.password || !req.body.pinCode 
-        || !req.body.contactNumber || !req.body.email){
-        throw("Bad Request Missing input parameters.");
-    }    
-}
-
-function validateLoginInput(req, res){
-    if (!req.body.name || !req.body.password){
-        throw("Bad Request Missing username/password.");
-    }    
-}
